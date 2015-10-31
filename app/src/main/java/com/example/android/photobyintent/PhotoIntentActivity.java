@@ -129,7 +129,6 @@ public class PhotoIntentActivity extends Activity {
 		mImageView.setImageBitmap(bitmap);
 		mVideoUri = null;
 		mImageView.setVisibility(View.VISIBLE);
-		mVideoView.setVisibility(View.INVISIBLE);
 	}
 
 	private void galleryAddPic() {
@@ -229,29 +228,14 @@ public class PhotoIntentActivity extends Activity {
 		setContentView(R.layout.main);
 
 		mImageView = (ImageView) findViewById(R.id.imageView1);
-		mVideoView = (VideoView) findViewById(R.id.videoView1);
 		mImageBitmap = null;
 		mVideoUri = null;
 
-		Button picBtn = (Button) findViewById(R.id.btnIntend);
+		Button picBtn = (Button) findViewById(R.id.btnPicture);
 		setBtnListenerOrDisable( 
 				picBtn, 
 				mTakePicOnClickListener,
 				MediaStore.ACTION_IMAGE_CAPTURE
-		);
-
-		Button picSBtn = (Button) findViewById(R.id.btnIntendS);
-		setBtnListenerOrDisable( 
-				picSBtn, 
-				mTakePicSOnClickListener,
-				MediaStore.ACTION_IMAGE_CAPTURE
-		);
-
-		Button vidBtn = (Button) findViewById(R.id.btnIntendV);
-		setBtnListenerOrDisable( 
-				vidBtn, 
-				mTakeVidOnClickListener,
-				MediaStore.ACTION_VIDEO_CAPTURE
 		);
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -305,11 +289,6 @@ public class PhotoIntentActivity extends Activity {
 		mImageView.setImageBitmap(mImageBitmap);
 		mImageView.setVisibility(
 				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ? 
-						ImageView.VISIBLE : ImageView.INVISIBLE
-		);
-		mVideoView.setVideoURI(mVideoUri);
-		mVideoView.setVisibility(
-				savedInstanceState.getBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY) ? 
 						ImageView.VISIBLE : ImageView.INVISIBLE
 		);
 	}
