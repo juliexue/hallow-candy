@@ -36,11 +36,6 @@ public class PhotoIntentActivity extends Activity {
 	private ImageView mImageView;
 	private Bitmap mImageBitmap;
 
-	private static final String VIDEO_STORAGE_KEY = "viewvideo";
-	private static final String VIDEOVIEW_VISIBILITY_STORAGE_KEY = "videoviewvisibility";
-	private VideoView mVideoView;
-	private Uri mVideoUri;
-
 	private String mCurrentPhotoPath;
 
 	private static final String JPEG_FILE_PREFIX = "IMG_";
@@ -127,7 +122,6 @@ public class PhotoIntentActivity extends Activity {
 		
 		/* Associate the Bitmap to the ImageView */
 		mImageView.setImageBitmap(bitmap);
-		mVideoUri = null;
 		mImageView.setVisibility(View.VISIBLE);
 	}
 
@@ -174,9 +168,7 @@ public class PhotoIntentActivity extends Activity {
 		Bundle extras = intent.getExtras();
 		mImageBitmap = (Bitmap) extras.get("data");
 		mImageView.setImageBitmap(mImageBitmap);
-		mVideoUri = null;
 		mImageView.setVisibility(View.VISIBLE);
-		mVideoView.setVisibility(View.INVISIBLE);
 	}
 
 	private void handleBigCameraPhoto() {
@@ -190,10 +182,7 @@ public class PhotoIntentActivity extends Activity {
 	}
 
 	private void handleCameraVideo(Intent intent) {
-		mVideoUri = intent.getData();
-		mVideoView.setVideoURI(mVideoUri);
 		mImageBitmap = null;
-		mVideoView.setVisibility(View.VISIBLE);
 		mImageView.setVisibility(View.INVISIBLE);
 	}
 
@@ -229,7 +218,6 @@ public class PhotoIntentActivity extends Activity {
 
 		mImageView = (ImageView) findViewById(R.id.imageView1);
 		mImageBitmap = null;
-		mVideoUri = null;
 
 		Button picBtn = (Button) findViewById(R.id.btnPicture);
 		setBtnListenerOrDisable( 
@@ -275,9 +263,7 @@ public class PhotoIntentActivity extends Activity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
-		outState.putParcelable(VIDEO_STORAGE_KEY, mVideoUri);
 		outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
-		outState.putBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY, (mVideoUri != null) );
 		super.onSaveInstanceState(outState);
 	}
 
@@ -285,7 +271,6 @@ public class PhotoIntentActivity extends Activity {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
-		mVideoUri = savedInstanceState.getParcelable(VIDEO_STORAGE_KEY);
 		mImageView.setImageBitmap(mImageBitmap);
 		mImageView.setVisibility(
 				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ? 
