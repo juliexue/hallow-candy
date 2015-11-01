@@ -267,7 +267,7 @@ public class HallowCandyActivity extends Activity implements
 
 							//LOAD IMAGE LIST
 							//null list of strings for text descriptions for now
-							ArrayList<JSONObject> listdata = new ArrayList<JSONObject>();
+							final ArrayList<JSONObject> listdata = new ArrayList<JSONObject>();
 							JSONArray jArray = imageData.getJSONArray("data");
 							if (jArray != null) {
 								for (int i=0;i<jArray.length();i++){
@@ -284,6 +284,12 @@ public class HallowCandyActivity extends Activity implements
 								public void onItemClick(AdapterView<?> parent, View view,
 														int position, long id) {
 									Toast.makeText(HallowCandyActivity.this, "You Clicked at " + position, Toast.LENGTH_SHORT).show();
+
+									try {
+										findCandy(Double.valueOf(listdata.get(position).getString("lat")), Double.valueOf(listdata.get(position).getString("lon")));
+									} catch (Exception e) {
+										Toast.makeText(getApplicationContext(), "Can't find candy D:", Toast.LENGTH_SHORT).show();
+									}
 								}
 							});
 
