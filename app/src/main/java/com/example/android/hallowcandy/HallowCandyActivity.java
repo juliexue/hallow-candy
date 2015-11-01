@@ -23,7 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.android.photobyintent.R;
+import com.example.android.hallowcandy.R;
 import android.widget.Toast;
 
 import com.koushikdutta.async.future.Future;
