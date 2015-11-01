@@ -38,6 +38,7 @@ import com.koushikdutta.ion.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -92,8 +93,8 @@ public class HallowCandyActivity extends Activity implements
 //	protected Button mStartUpdatesButton;
 //	protected Button mStopUpdatesButton;
 //	protected TextView mLastUpdateTimeTextView;
-	protected TextView mLatitudeTextView;
-	protected TextView mLongitudeTextView;
+//	protected TextView mLatitudeTextView;
+//	protected TextView mLongitudeTextView;
 
 	/**
 	 * Tracks the status of the location updates request. Value changes when the user presses the
@@ -110,7 +111,7 @@ public class HallowCandyActivity extends Activity implements
 
 	//192.168.56.1 for genymotion
 
-	private static final String ENDPOINT = "http://localhost:8080/upload";
+	private static final String ENDPOINT = "http://localhost:8080";
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
 	private ImageView mImageView;
@@ -163,47 +164,47 @@ public class HallowCandyActivity extends Activity implements
 	}
 
 	private File setUpPhotoFile() throws IOException {
-		
+
 		File f = createImageFile();
 		mCurrentPhotoPath = f.getAbsolutePath();
-		
+
 		return f;
 	}
 
-	private void setPic() {
-
-		/* There isn't enough memory to open up more than a couple camera photos */
-		/* So pre-scale the target bitmap into which the file is decoded */
-
-		/* Get the size of the ImageView */
-		int targetW = mImageView.getWidth();
-		int targetH = mImageView.getHeight();
-
-		/* Get the size of the image */
-		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-		bmOptions.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-		int photoW = bmOptions.outWidth;
-		int photoH = bmOptions.outHeight;
-		
-		/* Figure out which way needs to be reduced less */
-		int scaleFactor = 1;
-		if ((targetW > 0) || (targetH > 0)) {
-			scaleFactor = Math.min(photoW/targetW, photoH/targetH);	
-		}
-
-		/* Set bitmap options to scale the image decode target */
-		bmOptions.inJustDecodeBounds = false;
-		bmOptions.inSampleSize = scaleFactor;
-		bmOptions.inPurgeable = true;
-
-		/* Decode the JPEG file into a Bitmap */
-		Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-		
-		/* Associate the Bitmap to the ImageView */
-		mImageView.setImageBitmap(bitmap);
-		mImageView.setVisibility(View.VISIBLE);
-	}
+//	private void setPic() {
+//
+//		/* There isn't enough memory to open up more than a couple camera photos */
+//		/* So pre-scale the target bitmap into which the file is decoded */
+//
+//		/* Get the size of the ImageView */
+////		int targetW = mImageView.getWidth();
+////		int targetH = mImageView.getHeight();
+//
+//		/* Get the size of the image */
+//		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+//		bmOptions.inJustDecodeBounds = true;
+//		BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+//		int photoW = bmOptions.outWidth;
+//		int photoH = bmOptions.outHeight;
+//
+//		/* Figure out which way needs to be reduced less */
+//		int scaleFactor = 1;
+//		if ((targetW > 0) || (targetH > 0)) {
+//			scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+//		}
+//
+//		/* Set bitmap options to scale the image decode target */
+//		bmOptions.inJustDecodeBounds = false;
+//		bmOptions.inSampleSize = scaleFactor;
+//		bmOptions.inPurgeable = true;
+//
+//		/* Decode the JPEG file into a Bitmap */
+//		Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+//
+//		/* Associate the Bitmap to the ImageView */
+//		mImageView.setImageBitmap(bitmap);
+//		mImageView.setVisibility(View.VISIBLE);
+//	}
 
 	private void galleryAddPic() {
 		    Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
@@ -211,6 +212,7 @@ public class HallowCandyActivity extends Activity implements
 		    Uri contentUri = Uri.fromFile(f);
 		    mediaScanIntent.setData(contentUri);
 		    this.sendBroadcast(mediaScanIntent);
+
 	}
 
 	private void dispatchTakePictureIntent(int actionCode) {
@@ -220,7 +222,7 @@ public class HallowCandyActivity extends Activity implements
 		switch(actionCode) {
 		case ACTION_TAKE_PHOTO_B:
 			File f = null;
-			
+
 			try {
 				f = setUpPhotoFile();
 				mCurrentPhotoPath = f.getAbsolutePath();
@@ -233,7 +235,7 @@ public class HallowCandyActivity extends Activity implements
 			break;
 
 		default:
-			break;			
+			break;
 		} // switch
 
 		startActivityForResult(takePictureIntent, actionCode);
@@ -242,7 +244,7 @@ public class HallowCandyActivity extends Activity implements
 	private void handleBigCameraPhoto() {
 
 		if (mCurrentPhotoPath != null) {
-			setPic();
+			//setPic();
 			updateUI();
 			uploadPic();
 			galleryAddPic();
@@ -251,13 +253,9 @@ public class HallowCandyActivity extends Activity implements
 
 	}
 
-	private void uploadPic() {
-		// get the image file we've saved
-		File f = new File(mCurrentPhotoPath);
-
-		Future uploading = Ion.with(HallowCandyActivity.this)
-				.load(ENDPOINT)
-				.setMultipartFile("image", f)
+	private void getPic(){
+		Ion.with(HallowCandyActivity.this)
+				.load(ENDPOINT + "/getImages")
 				.setMultipartParameter("lat", String.valueOf(mCurrentLocation.getLatitude()))
 				.setMultipartParameter("lon", String.valueOf(mCurrentLocation.getLongitude()))
 				.asString()
@@ -265,9 +263,31 @@ public class HallowCandyActivity extends Activity implements
 				.setCallback(new FutureCallback<Response<String>>() {
 					@Override
 					public void onCompleted(Exception e, Response<String> result) {
+//						String testing = result.toString();
+						Log.i(TAG, result.toString());
+					}
+				});
+	}
+
+	private void uploadPic() {
+		// get the image file we've saved
+		File f = new File(mCurrentPhotoPath);
+
+		Future uploading = Ion.with(HallowCandyActivity.this)
+				.load(ENDPOINT + "/upload")
+				.setMultipartFile("image", f)
+				.setMultipartParameter("lat", String.valueOf(mCurrentLocation.getLatitude()))
+				.setMultipartParameter("lon", String.valueOf(mCurrentLocation.getLongitude()))
+				.asString()
+				.withResponse()
+
+				.setCallback(new FutureCallback<Response<String>>() {
+					@Override
+					public void onCompleted(Exception e, Response<String> result) {
 						try {
 							JSONObject jobj = new JSONObject(result.getResult());
 							Toast.makeText(getApplicationContext(), jobj.getString("response"), Toast.LENGTH_SHORT).show();
+							getPic();
 
 						} catch (JSONException e1) {
 							e1.printStackTrace();
@@ -292,8 +312,8 @@ public class HallowCandyActivity extends Activity implements
 		setContentView(R.layout.main);
 
 		//location stuff
-		mLatitudeTextView = (TextView) findViewById((R.id.textLatitude));
-		mLongitudeTextView = (TextView) findViewById((R.id.textLongitude));
+	//	mLatitudeTextView = (TextView) findViewById((R.id.textLatitude));
+		//mLongitudeTextView = (TextView) findViewById((R.id.textLongitude));
 
 		mRequestingLocationUpdates = false;
 		mLastUpdateTime = "";
@@ -306,7 +326,7 @@ public class HallowCandyActivity extends Activity implements
 		buildGoogleApiClient();
 
 		//picture stuff
-		mImageView = (ImageView) findViewById(R.id.imagePreview);
+	//	mImageView = (ImageView) findViewById(R.id.imagePreview);
 		Ion.getDefault(this).configure().setLogging("Ion", Log.DEBUG);
 		mImageBitmap = null;
 
@@ -436,10 +456,10 @@ public class HallowCandyActivity extends Activity implements
 	 * Updates the latitude, the longitude, and the last location time in the UI.
 	 */
 	private void updateUI() {
-		mLatitudeTextView.setText(String.format("%s: %f", "Latitude:",
-				mCurrentLocation.getLatitude()));
-		mLongitudeTextView.setText(String.format("%s: %f", "Longitude:",
-				mCurrentLocation.getLongitude()));
+//		mLatitudeTextView.setText(String.format("%s: %f", "Latitude:",
+//				mCurrentLocation.getLatitude()));
+//		mLongitudeTextView.setText(String.format("%s: %f", "Longitude:",
+//				mCurrentLocation.getLongitude()));
 
 
 	}
@@ -526,11 +546,11 @@ public class HallowCandyActivity extends Activity implements
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
-		mImageView.setImageBitmap(mImageBitmap);
-		mImageView.setVisibility(
-				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
-						ImageView.VISIBLE : ImageView.INVISIBLE
-		);
+//		mImageView.setImageBitmap(mImageBitmap);
+//		mImageView.setVisibility(
+//				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
+//						ImageView.VISIBLE : ImageView.INVISIBLE
+//		);
 
 		mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
 	}

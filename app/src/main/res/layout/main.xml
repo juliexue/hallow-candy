@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+    <Button android:text="@string/btnPicture" android:id="@+id/btnPicture"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:weightSum="1">
+        android:layout_width="wrap_content"
+        android:layout_gravity="right"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" />
 
-        <Button android:text="@string/btnPicture" android:id="@+id/btnPicture"
-            android:layout_height="wrap_content"
-            android:layout_width="166dp"
-            android:layout_weight="0.92" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="1600dp"
+        android:fillViewport="true"
+        android:layout_below="@+id/btnPicture">
 
-        <Button
-            android:layout_width="181dp"
-            android:layout_height="wrap_content"
-            android:text="@string/btnUpload"
-            android:id="@+id/button" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="204dp"
-        android:layout_height="wrap_content"
-        android:text="Latitude"
-        android:id="@+id/textLatitude"
-        android:layout_gravity="center_horizontal" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Longitude"
-        android:id="@+id/textLongitude"
-        android:layout_gravity="center_horizontal" />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageButton"
+                    android:layout_below="@+id/btnPicture"
+                    android:layout_alignRight="@+id/btnPicture" />
 
-    <ImageView
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      android:visibility="visible"
-      android:id="@+id/imagePreview"
-        android:layout_weight="1.30" />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageButton2" />
 
-</LinearLayout>
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageButton3" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
