@@ -22,7 +22,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.VideoView;
+
+import com.koushikdutta.async.future.Future;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class PhotoIntentActivity extends Activity {
@@ -31,6 +40,9 @@ public class PhotoIntentActivity extends Activity {
 	private static final int ACTION_TAKE_PHOTO_S = 2;
 	private static final int ACTION_TAKE_VIDEO = 3;
 
+	//192.168.56.1 for genymotion
+
+	private static final String ENDPOINT = "http://192.168.56.1:8080";
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
 	private ImageView mImageView;
@@ -184,10 +196,35 @@ public class PhotoIntentActivity extends Activity {
 
 		if (mCurrentPhotoPath != null) {
 			setPic();
+			uploadPic();
 			galleryAddPic();
 			mCurrentPhotoPath = null;
 		}
 
+	}
+
+	private void uploadPic() {
+		// get the image file we've saved
+		File f = new File(mCurrentPhotoPath);
+
+		Future uploading = Ion.with(PhotoIntentActivity.this)
+				.load(ENDPOINT + "/upload")
+				.setMultipartFile("image", f)
+				.asString()
+				.withResponse()
+				.setCallback(new FutureCallback<Response<String>>() {
+					@Override
+					public void onCompleted(Exception e, Response<String> result) {
+						try {
+							JSONObject jobj = new JSONObject(result.getResult());
+							Toast.makeText(getApplicationContext(), jobj.getString("response"), Toast.LENGTH_SHORT).show();
+
+						} catch (JSONException e1) {
+							e1.printStackTrace();
+						}
+
+					}
+				});
 	}
 
 	private void handleCameraVideo(Intent intent) {
@@ -227,6 +264,8 @@ public class PhotoIntentActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		Ion.getDefault(this).configure().setLogging("Ion", Log.DEBUG);
 
 		mImageView = (ImageView) findViewById(R.id.imageView1);
 		mVideoView = (VideoView) findViewById(R.id.videoView1);
