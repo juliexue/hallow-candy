@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -245,6 +247,7 @@ public class HallowCandyActivity extends Activity implements
 			//uploadPic();
 			galleryAddPic();
 			mCurrentPhotoPath = null;
+			getPic();
 		}
 
 	}
@@ -259,12 +262,21 @@ public class HallowCandyActivity extends Activity implements
 				.setCallback(new FutureCallback<Response<String>>() {
 					@Override
 					public void onCompleted(Exception e, Response<String> result) {
+						Log.i(TAG, result.toString());
 						try {
-							imageData = new JSONObject(result.toString());
+							imageData = new JSONObject(result.getResult());
 
 							//LOAD IMAGE LIST
 							//null list of strings for text descriptions for now
-							ImageList adapter = new ImageList(HallowCandyActivity.this, (List<JSONObject>) imageData);
+							ArrayList<JSONObject> listdata = new ArrayList<JSONObject>();
+							JSONArray jArray = imageData.getJSONArray("data");
+							if (jArray != null) {
+								for (int i=0;i<jArray.length();i++){
+									listdata.add(jArray.getJSONObject(i));
+								}
+							}
+
+							ImageList adapter = new ImageList(HallowCandyActivity.this, listdata);
 							ListView list=(ListView)findViewById(R.id.list);
 							list.setAdapter(adapter);
 							list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -273,14 +285,12 @@ public class HallowCandyActivity extends Activity implements
 								public void onItemClick(AdapterView<?> parent, View view,
 														int position, long id) {
 									Toast.makeText(HallowCandyActivity.this, "You Clicked at " + position, Toast.LENGTH_SHORT).show();
-
 								}
 							});
 
 						}catch(JSONException e1){
 							Toast.makeText(getApplicationContext(), "ERROR: getting images", Toast.LENGTH_SHORT).show();
 						}
-						Log.i(TAG, result.toString());
 					}
 				});
 	}
@@ -358,7 +368,6 @@ public class HallowCandyActivity extends Activity implements
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
 		}
 
-		getPic();
 	}
 
 	/**
