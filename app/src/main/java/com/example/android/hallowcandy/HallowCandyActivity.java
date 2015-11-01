@@ -107,6 +107,8 @@ public class HallowCandyActivity extends Activity implements
 	 */
 	protected String mLastUpdateTime;
 
+	protected JSONObject imageData;
+
 	private static final int ACTION_TAKE_PHOTO_B = 1;
 
 	//192.168.56.1 for genymotion
@@ -263,7 +265,11 @@ public class HallowCandyActivity extends Activity implements
 				.setCallback(new FutureCallback<Response<String>>() {
 					@Override
 					public void onCompleted(Exception e, Response<String> result) {
-//						String testing = result.toString();
+						try {
+							imageData = new JSONObject(result.toString());
+						}catch(JSONException e1){
+							Toast.makeText(getApplicationContext(), "ERROR: getting images", Toast.LENGTH_SHORT).show();
+						}
 						Log.i(TAG, result.toString());
 					}
 				});
