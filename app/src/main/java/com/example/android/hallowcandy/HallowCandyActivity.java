@@ -488,6 +488,11 @@ public class HallowCandyActivity extends Activity implements
 
 	@Override
 	protected void onStop() {
+		// Stop location updates
+		if (mGoogleApiClient.isConnected()) {
+			stopLocationUpdates();
+		}
+
 		mGoogleApiClient.disconnect();
 
 		super.onStop();
@@ -512,9 +517,6 @@ public class HallowCandyActivity extends Activity implements
 		outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null));
 
 		//save location details
-//		outState.putDouble(LOCATION_LATITUDE, mLastLocation.getLatitude());
-//		outState.putDouble(LOCATION_LONGITUDE, mLastLocation.getLongitude());
-
 		outState.putParcelable(LOCATION_KEY, mCurrentLocation);
 
 		super.onSaveInstanceState(outState);
@@ -531,8 +533,6 @@ public class HallowCandyActivity extends Activity implements
 		);
 
 		mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
-//		mLastLocation.setLatitude(savedInstanceState.getParcelable(LOCATION_KEY));
-//		mLastLocation.setLongitude(savedInstanceState.getDouble(LOCATION_LONGITUDE));
 	}
 
 	/**
@@ -611,7 +611,7 @@ public class HallowCandyActivity extends Activity implements
 		mCurrentLocation = location;
 		mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 		updateUI();
-		Toast.makeText(this, "location updated!!",
+		Toast.makeText(this, "location updated!! :D",
 				Toast.LENGTH_SHORT).show();
 	}
 
