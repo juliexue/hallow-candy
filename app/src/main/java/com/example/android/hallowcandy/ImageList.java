@@ -1,15 +1,20 @@
 package com.example.android.hallowcandy;
 
 import android.app.Activity;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.List;
 
 public class ImageList extends ArrayAdapter<JSONObject>{
@@ -29,10 +34,38 @@ public class ImageList extends ArrayAdapter<JSONObject>{
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         try{
             txtTitle.setText(images.get(position).get("lat").toString());
+            new DownloadImageTask(imageView)
+                    .execute(HallowCandyActivity.ENDPOINT + images.get(position).get("path"));
         } catch (Exception e) {
             txtTitle.setText("woops");
         }
-        //set image please
-        return rowView;
+
+    return rowView;
+    }
+
+}
+
+class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    ImageView bmImage;
+
+    public DownloadImageTask(ImageView bmImage) {
+        this.bmImage = bmImage;
+    }
+
+    protected Bitmap doInBackground(String... urls) {
+        String urldisplay = urls[0];
+        Bitmap mIcon11 = null;
+        try {
+            InputStream in = new java.net.URL(urldisplay).openStream();
+            mIcon11 = BitmapFactory.decodeStream(in);
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
+        return mIcon11;
+    }
+
+    protected void onPostExecute(Bitmap result) {
+        bmImage.setImageBitmap(result);
     }
 }

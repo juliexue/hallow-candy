@@ -109,7 +109,7 @@ public class HallowCandyActivity extends Activity implements
 
 	//192.168.56.1 for genymotion
 
-	private static final String ENDPOINT = "http://localhost:8080";
+	public static final String ENDPOINT = "http://localhost:8080";
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
 	private ImageView mImageView;
@@ -175,8 +175,7 @@ public class HallowCandyActivity extends Activity implements
 //		/* So pre-scale the target bitmap into which the file is decoded */
 //
 //		/* Get the size of the ImageView */
-////		int targetW = mImageView.getWidth();
-////		int targetH = mImageView.getHeight();
+////		end
 //
 //		/* Get the size of the image */
 //		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -244,7 +243,7 @@ public class HallowCandyActivity extends Activity implements
 		if (mCurrentPhotoPath != null) {
 			//setPic();
 			updateUI();
-			//uploadPic();
+			uploadPic();
 			galleryAddPic();
 			mCurrentPhotoPath = null;
 			getPic();
