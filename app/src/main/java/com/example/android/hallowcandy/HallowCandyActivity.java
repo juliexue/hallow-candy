@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.android.hallowcandy.R;
+
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koushikdutta.async.future.Future;
@@ -34,8 +37,34 @@ import com.koushikdutta.ion.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 
-public class HallowCandyActivity extends Activity {
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+
+
+public class HallowCandyActivity extends Activity implements
+		ConnectionCallbacks, OnConnectionFailedListener {
+
+	protected static final String TAG = "HallowCandyActivity";
+
+
+	/**
+	 * Provides the entry point to Google Play services.
+	 */
+	protected GoogleApiClient mGoogleApiClient;
+
+	/**
+	 * Represents a geographical location.
+	 */
+	protected Location mLastLocation;
+
+	protected TextView mLatitudeText;
+	protected TextView mLongitudeText;
 
 	private static final int ACTION_TAKE_PHOTO_B = 1;
 
@@ -219,6 +248,13 @@ public class HallowCandyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		//location stuff
+		mLatitudeText = (TextView) findViewById((R.id.textLatitude));
+		mLongitudeText = (TextView) findViewById((R.id.textLongitude));
+
+		buildGoogleApiClient();
+
+		//picture stuff
 		mImageView = (ImageView) findViewById(R.id.imagePreview);
 		Ion.getDefault(this).configure().setLogging("Ion", Log.DEBUG);
 		mImageBitmap = null;
@@ -234,6 +270,31 @@ public class HallowCandyActivity extends Activity {
 			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
 		} else {
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
+		}
+	}
+
+	/**
+	 * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+	 */
+	protected synchronized void buildGoogleApiClient() {
+		mGoogleApiClient = new GoogleApiClient.Builder(this)
+				.addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this)
+				.addApi(LocationServices.API)
+				.build();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		mGoogleApiClient.connect();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (mGoogleApiClient.isConnected()) {
+			mGoogleApiClient.disconnect();
 		}
 	}
 
@@ -263,7 +324,7 @@ public class HallowCandyActivity extends Activity {
 		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
 		mImageView.setImageBitmap(mImageBitmap);
 		mImageView.setVisibility(
-				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ? 
+				savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
 						ImageView.VISIBLE : ImageView.INVISIBLE
 		);
 	}
@@ -302,6 +363,42 @@ public class HallowCandyActivity extends Activity {
 				getText(R.string.cannot).toString() + " " + btn.getText());
 			btn.setClickable(false);
 		}
+	}
+
+	/**
+	 * Runs when a GoogleApiClient object successfully connects.
+	 */
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// Provides a simple way of getting a device's location and is well suited for
+		// applications that do not require a fine-grained location and that do not need location
+		// updates. Gets the best and most recent location currently available, which may be null
+		// in rare cases when a location is not available.
+		mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+		if (mLastLocation != null) {
+			mLatitudeText.setText(String.format("%s: %f", "Latitude:",
+					mLastLocation.getLatitude()));
+			mLongitudeText.setText(String.format("%s: %f", "Longitude:",
+					mLastLocation.getLongitude()));
+		} else {
+			Toast.makeText(this, "No location detected. :(", Toast.LENGTH_LONG).show();
+		}
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		// Refer to the javadoc for ConnectionResult to see what error codes might be returned in
+		// onConnectionFailed.
+		Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+	}
+
+
+	@Override
+	public void onConnectionSuspended(int cause) {
+		// The connection to Google Play services was lost for some reason. We call connect() to
+		// attempt to re-establish the connection.
+		Log.i(TAG, "Connection suspended");
+		mGoogleApiClient.connect();
 	}
 
 }
