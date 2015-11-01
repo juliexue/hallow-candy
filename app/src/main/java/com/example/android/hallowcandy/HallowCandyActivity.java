@@ -217,6 +217,8 @@ public class HallowCandyActivity extends Activity implements
 		Future uploading = Ion.with(HallowCandyActivity.this)
 				.load(ENDPOINT)
 				.setMultipartFile("image", f)
+				.setMultipartParameter("lat", "42.360360")
+				.setMultipartParameter("lon", "-71.104343")
 				.asString()
 				.withResponse()
 				.setCallback(new FutureCallback<Response<String>>() {
