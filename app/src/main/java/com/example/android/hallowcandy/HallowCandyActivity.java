@@ -24,12 +24,25 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.android.photobyintent.R;
+import android.widget.Toast;
+import android.widget.VideoView;
+
+import com.koushikdutta.async.future.Future;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class HallowCandyActivity extends Activity {
 
 	private static final int ACTION_TAKE_PHOTO_B = 1;
 
+	//192.168.56.1 for genymotion
+
+	private static final String ENDPOINT = "http://192.168.56.1:8080";
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
 	private ImageView mImageView;
@@ -162,12 +175,36 @@ public class HallowCandyActivity extends Activity {
 
 		if (mCurrentPhotoPath != null) {
 			setPic();
+			uploadPic();
 			galleryAddPic();
 			mCurrentPhotoPath = null;
 		}
 
 	}
 
+	private void uploadPic() {
+		// get the image file we've saved
+		File f = new File(mCurrentPhotoPath);
+
+		Future uploading = Ion.with(HallowCandyActivity.this)
+				.load(ENDPOINT + "/upload")
+				.setMultipartFile("image", f)
+				.asString()
+				.withResponse()
+				.setCallback(new FutureCallback<Response<String>>() {
+					@Override
+					public void onCompleted(Exception e, Response<String> result) {
+						try {
+							JSONObject jobj = new JSONObject(result.getResult());
+							Toast.makeText(getApplicationContext(), jobj.getString("response"), Toast.LENGTH_SHORT).show();
+
+						} catch (JSONException e1) {
+							e1.printStackTrace();
+						}
+
+					}
+				});
+	}
 
 	Button.OnClickListener mTakePicOnClickListener = 
 		new Button.OnClickListener() {
@@ -184,6 +221,7 @@ public class HallowCandyActivity extends Activity {
 		setContentView(R.layout.main);
 
 		mImageView = (ImageView) findViewById(R.id.imagePreview);
+		Ion.getDefault(this).configure().setLogging("Ion", Log.DEBUG);
 		mImageBitmap = null;
 
 		Button picBtn = (Button) findViewById(R.id.btnPicture);

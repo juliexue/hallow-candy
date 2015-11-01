@@ -4,9 +4,14 @@ android {
     compileSdkVersion 21
     buildToolsVersion "23.0.1"
 
+    dependencies {
+        compile 'com.koushikdutta.ion:ion:2.1.6'
+        compile 'com.android.support:support-v4:21.0.0'
+    }
+
     defaultConfig {
         applicationId "com.example.android.photobyintent"
-        minSdkVersion 1
+        minSdkVersion 4
         targetSdkVersion 12
     }
 
