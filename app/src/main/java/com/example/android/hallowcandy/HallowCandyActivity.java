@@ -1,4 +1,4 @@
-package com.example.android.photobyintent;
+package com.example.android.hallowcandy;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +22,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.VideoView;
+
+import com.example.android.photobyintent.R;
 
 
-public class PhotoIntentActivity extends Activity {
+public class HallowCandyActivity extends Activity {
 
 	private static final int ACTION_TAKE_PHOTO_B = 1;
 	private static final int ACTION_TAKE_PHOTO_S = 2;
@@ -216,7 +217,7 @@ public class PhotoIntentActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		mImageView = (ImageView) findViewById(R.id.imageView1);
+		mImageView = (ImageView) findViewById(R.id.imagePreview);
 		mImageBitmap = null;
 
 		Button picBtn = (Button) findViewById(R.id.btnPicture);
