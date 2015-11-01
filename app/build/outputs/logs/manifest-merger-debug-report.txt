@@ -37,7 +37,7 @@ ADDED from /Users/julie/BostonHack/hallow-candy/app/src/main/AndroidManifest.xml
 		ADDED from /Users/julie/BostonHack/hallow-candy/app/src/main/AndroidManifest.xml:10:48-80
 	android:icon
 		ADDED from /Users/julie/BostonHack/hallow-candy/app/src/main/AndroidManifest.xml:10:18-47
-activity#com.example.android.hallowcandy.PhotoIntentActivity
+activity#com.example.android.hallowcandy.HallowCandyActivity
 ADDED from /Users/julie/BostonHack/hallow-candy/app/src/main/AndroidManifest.xml:11:9-17:20
 	android:label
 		ADDED from /Users/julie/BostonHack/hallow-candy/app/src/main/AndroidManifest.xml:12:19-51

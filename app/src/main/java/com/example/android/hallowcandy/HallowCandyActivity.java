@@ -29,8 +29,6 @@ import com.example.android.photobyintent.R;
 public class HallowCandyActivity extends Activity {
 
 	private static final int ACTION_TAKE_PHOTO_B = 1;
-	private static final int ACTION_TAKE_PHOTO_S = 2;
-	private static final int ACTION_TAKE_VIDEO = 3;
 
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
@@ -44,18 +42,18 @@ public class HallowCandyActivity extends Activity {
 
 	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
-	
+
 	/* Photo album for this application */
 	private String getAlbumName() {
 		return getString(R.string.album_name);
 	}
 
-	
+
 	private File getAlbumDir() {
 		File storageDir = null;
 
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			
+
 			storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
 
 			if (storageDir != null) {
@@ -66,11 +64,11 @@ public class HallowCandyActivity extends Activity {
 					}
 				}
 			}
-			
+
 		} else {
 			Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
 		}
-		
+
 		return storageDir;
 	}
 
@@ -160,18 +158,6 @@ public class HallowCandyActivity extends Activity {
 		startActivityForResult(takePictureIntent, actionCode);
 	}
 
-	private void dispatchTakeVideoIntent() {
-		Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-		startActivityForResult(takeVideoIntent, ACTION_TAKE_VIDEO);
-	}
-
-	private void handleSmallCameraPhoto(Intent intent) {
-		Bundle extras = intent.getExtras();
-		mImageBitmap = (Bitmap) extras.get("data");
-		mImageView.setImageBitmap(mImageBitmap);
-		mImageView.setVisibility(View.VISIBLE);
-	}
-
 	private void handleBigCameraPhoto() {
 
 		if (mCurrentPhotoPath != null) {
@@ -182,32 +168,12 @@ public class HallowCandyActivity extends Activity {
 
 	}
 
-	private void handleCameraVideo(Intent intent) {
-		mImageBitmap = null;
-		mImageView.setVisibility(View.INVISIBLE);
-	}
 
 	Button.OnClickListener mTakePicOnClickListener = 
 		new Button.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
-		}
-	};
-
-	Button.OnClickListener mTakePicSOnClickListener = 
-		new Button.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
-		}
-	};
-
-	Button.OnClickListener mTakeVidOnClickListener = 
-		new Button.OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			dispatchTakeVideoIntent();
 		}
 	};
 
@@ -243,20 +209,6 @@ public class HallowCandyActivity extends Activity {
 			}
 			break;
 		} // ACTION_TAKE_PHOTO_B
-
-		case ACTION_TAKE_PHOTO_S: {
-			if (resultCode == RESULT_OK) {
-				handleSmallCameraPhoto(data);
-			}
-			break;
-		} // ACTION_TAKE_PHOTO_S
-
-		case ACTION_TAKE_VIDEO: {
-			if (resultCode == RESULT_OK) {
-				handleCameraVideo(data);
-			}
-			break;
-		} // ACTION_TAKE_VIDEO
 		} // switch
 	}
 
