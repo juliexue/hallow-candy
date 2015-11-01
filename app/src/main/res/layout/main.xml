@@ -12,42 +12,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true" />
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="1600dp"
-        android:fillViewport="true"
-        android:layout_below="@+id/btnPicture">
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageButton"
-                    android:layout_below="@+id/btnPicture"
-                    android:layout_alignRight="@+id/btnPicture" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageButton2" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageButton3" />
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    </ListView>
 
 </RelativeLayout>

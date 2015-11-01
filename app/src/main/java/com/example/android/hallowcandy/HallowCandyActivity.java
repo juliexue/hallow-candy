@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -22,12 +21,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.android.hallowcandy.R;
-
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.koushikdutta.async.future.Future;
@@ -38,7 +36,6 @@ import com.koushikdutta.ion.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.JsonObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -46,9 +43,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 
 
 public class HallowCandyActivity extends Activity implements
@@ -267,6 +261,22 @@ public class HallowCandyActivity extends Activity implements
 					public void onCompleted(Exception e, Response<String> result) {
 						try {
 							imageData = new JSONObject(result.toString());
+
+							//LOAD IMAGE LIST
+							//null list of strings for text descriptions for now
+							ImageList adapter = new ImageList(HallowCandyActivity.this, (List<JSONObject>) imageData);
+							ListView list=(ListView)findViewById(R.id.list);
+							list.setAdapter(adapter);
+							list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+								@Override
+								public void onItemClick(AdapterView<?> parent, View view,
+														int position, long id) {
+									Toast.makeText(HallowCandyActivity.this, "You Clicked at " + position, Toast.LENGTH_SHORT).show();
+
+								}
+							});
+
 						}catch(JSONException e1){
 							Toast.makeText(getApplicationContext(), "ERROR: getting images", Toast.LENGTH_SHORT).show();
 						}
@@ -293,7 +303,6 @@ public class HallowCandyActivity extends Activity implements
 						try {
 							JSONObject jobj = new JSONObject(result.getResult());
 							Toast.makeText(getApplicationContext(), jobj.getString("response"), Toast.LENGTH_SHORT).show();
-							getPic();
 
 						} catch (JSONException e1) {
 							e1.printStackTrace();
@@ -348,6 +357,8 @@ public class HallowCandyActivity extends Activity implements
 		} else {
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
 		}
+
+		getPic();
 	}
 
 	/**
