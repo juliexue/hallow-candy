@@ -246,7 +246,7 @@ public class HallowCandyActivity extends Activity implements
 		if (mCurrentPhotoPath != null) {
 			//setPic();
 			updateUI();
-			uploadPic();
+			//uploadPic();
 			galleryAddPic();
 			mCurrentPhotoPath = null;
 		}
@@ -454,14 +454,23 @@ public class HallowCandyActivity extends Activity implements
 
 	/**
 	 * Updates the latitude, the longitude, and the last location time in the UI.
+	 * 42.360020, -71.094278 test mit data
 	 */
 	private void updateUI() {
+		//navigation
+		//Uri gmmIntentUri = Uri.parse("google.navigation:q=" + 42.360020 + "," + -71.094278 + "&mode=w");
+		//findCandy(42.360020, -71.094278);
 //		mLatitudeTextView.setText(String.format("%s: %f", "Latitude:",
 //				mCurrentLocation.getLatitude()));
 //		mLongitudeTextView.setText(String.format("%s: %f", "Longitude:",
 //				mCurrentLocation.getLongitude()));
+	}
 
-
+	private void findCandy(double lat, double lon) {
+		Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + lat + "," + lon + "(" + "Candy" + ")");
+		Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+		mapIntent.setPackage("com.google.android.apps.maps");
+		startActivity(mapIntent);
 	}
 
 	/**
