@@ -244,7 +244,7 @@ public class HallowCandyActivity extends Activity implements
 		if (mCurrentPhotoPath != null) {
 			setPic();
 			updateUI();
-			//uploadPic();
+			uploadPic();
 			galleryAddPic();
 			mCurrentPhotoPath = null;
 		}
@@ -258,8 +258,8 @@ public class HallowCandyActivity extends Activity implements
 		Future uploading = Ion.with(HallowCandyActivity.this)
 				.load(ENDPOINT)
 				.setMultipartFile("image", f)
-				.setMultipartParameter("lat", "42.360360")
-				.setMultipartParameter("lon", "-71.104343")
+				.setMultipartParameter("lat", String.valueOf(mCurrentLocation.getLatitude()))
+				.setMultipartParameter("lon", String.valueOf(mCurrentLocation.getLongitude()))
 				.asString()
 				.withResponse()
 				.setCallback(new FutureCallback<Response<String>>() {
@@ -399,27 +399,27 @@ public class HallowCandyActivity extends Activity implements
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 	}
 
-	/**
-	 * Handles the Start Updates button and requests start of location updates. Does nothing if
-	 * updates have already been requested.
-	 */
-	public void startUpdatesButtonHandler() {
-		if (!mRequestingLocationUpdates) {
-			mRequestingLocationUpdates = true;
-			startLocationUpdates();
-		}
-	}
-
-	/**
-	 * Handles the Stop Updates button, and requests removal of location updates. Does nothing if
-	 * updates were not previously requested.
-	 */
-	public void stopUpdatesButtonHandler() {
-		if (mRequestingLocationUpdates) {
-			mRequestingLocationUpdates = false;
-			stopLocationUpdates();
-		}
-	}
+//	/**
+//	 * Handles the Start Updates button and requests start of location updates. Does nothing if
+//	 * updates have already been requested.
+//	 */
+//	public void startUpdatesButtonHandler() {
+//		if (!mRequestingLocationUpdates) {
+//			mRequestingLocationUpdates = true;
+//			startLocationUpdates();
+//		}
+//	}
+//
+//	/**
+//	 * Handles the Stop Updates button, and requests removal of location updates. Does nothing if
+//	 * updates were not previously requested.
+//	 */
+//	public void stopUpdatesButtonHandler() {
+//		if (mRequestingLocationUpdates) {
+//			mRequestingLocationUpdates = false;
+//			stopLocationUpdates();
+//		}
+//	}
 
 	/**
 	 * Requests location updates from the FusedLocationApi.
