@@ -1,4 +1,4 @@
-package com.example.android.photobyintent;
+package com.example.android.hallowcandy;
 
 import java.io.File;
 
