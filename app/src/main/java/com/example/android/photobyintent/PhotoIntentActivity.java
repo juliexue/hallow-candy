@@ -42,7 +42,7 @@ public class PhotoIntentActivity extends Activity {
 
 	//192.168.56.1 for genymotion
 
-	private static final String ENDPOINT = "http://192.168.56.1:8080";
+	private static final String ENDPOINT = "http://localhost:8080/upload";
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
 	private ImageView mImageView;
@@ -199,7 +199,7 @@ public class PhotoIntentActivity extends Activity {
 		File f = new File(mCurrentPhotoPath);
 
 		Future uploading = Ion.with(PhotoIntentActivity.this)
-				.load(ENDPOINT + "/upload")
+				.load(ENDPOINT)
 				.setMultipartFile("image", f)
 				.asString()
 				.withResponse()
