@@ -12,11 +12,17 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true" />
 
-    <ListView
+    <GridView
         android:id="@+id/list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnPicture">
-    </ListView>
+        android:layout_below="@+id/btnPicture"
+        android:columnWidth="90dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center">
+    </GridView>
 
 </RelativeLayout>

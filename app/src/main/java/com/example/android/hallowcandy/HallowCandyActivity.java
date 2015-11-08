@@ -26,7 +26,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import com.koushikdutta.async.future.Future;
@@ -270,13 +270,13 @@ public class HallowCandyActivity extends Activity implements
 							final ArrayList<JSONObject> listdata = new ArrayList<JSONObject>();
 							JSONArray jArray = imageData.getJSONArray("data");
 							if (jArray != null) {
-								for (int i=0;i<jArray.length();i++){
+								for (int i=0;i<7;i++){
 									listdata.add(jArray.getJSONObject(i));
 								}
 							}
 
 							ImageList adapter = new ImageList(HallowCandyActivity.this, listdata);
-							ListView list=(ListView)findViewById(R.id.list);
+							GridView list=(GridView)findViewById(R.id.list);
 							list.setAdapter(adapter);
 							list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
