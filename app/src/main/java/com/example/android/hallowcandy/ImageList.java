@@ -30,14 +30,14 @@ public class ImageList extends ArrayAdapter<JSONObject>{
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView= inflater.inflate(R.layout.list_item, null, true);
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
+       // TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         try{
-            txtTitle.setText(images.get(position).get("lat").toString());
+         //   txtTitle.setText(images.get(position).get("lat").toString());
             new DownloadImageTask(imageView)
                     .execute(HallowCandyActivity.ENDPOINT + images.get(position).get("path"));
         } catch (Exception e) {
-            txtTitle.setText("woops");
+          //  txtTitle.setText("woops");
         }
 
     return rowView;
